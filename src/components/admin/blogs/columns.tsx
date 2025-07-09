@@ -73,10 +73,10 @@ const ActionButtons = ({ blog }: ActionButtonsProps) => {
   )
 }
 
-// Define the category object type
+// Define the category object type based on the API response
 type CategoryObject = {
   _id: string;
-  name?: string;
+  category: string;  // The actual category name
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
@@ -199,17 +199,19 @@ export const columns: ColumnDef<Blog>[] = [
     accessorKey: "category",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Category" />,
     cell: ({ row }) => {
-      // Handle when category is an object or a string
+      // Get category display value based on API response structure
       let categoryValue = 'Unknown';
       
       const category = row.original.category;
       if (typeof category === 'string') {
+        // If category is directly a string
         categoryValue = category;
       } else if (typeof category === 'object' && category !== null) {
-        // Try to extract a displayable value from the category object
-        if ('name' in category && typeof category.name === 'string') {
-          categoryValue = category.name;
+        // If category is an object with the structure from the API response
+        if ('category' in category && typeof category.category === 'string') {
+          categoryValue = category.category;
         } else if ('_id' in category) {
+          // Fallback to ID if no category name is found
           categoryValue = `Category ID: ${String(category._id).substring(0, 8)}...`;
         }
       }
