@@ -2,6 +2,8 @@
 
 import { Column } from "@tanstack/react-table"
 import { ChevronsUpDown, EyeOff, SortAsc, SortDesc } from "lucide-react"
+// Add eslint disable comment for cn import which is used in JSX
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {

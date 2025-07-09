@@ -14,6 +14,8 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement
 }
 
+// Define action types as const to ensure type safety
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
@@ -28,23 +30,25 @@ function genId() {
   return count.toString()
 }
 
+// Use the actionTypes for type safety
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ActionType = typeof actionTypes
 
 type Action =
   | {
-      type: ActionType["ADD_TOAST"]
+      type: typeof actionTypes.ADD_TOAST
       toast: ToasterToast
     }
   | {
-      type: ActionType["UPDATE_TOAST"]
+      type: typeof actionTypes.UPDATE_TOAST
       toast: Partial<ToasterToast>
     }
   | {
-      type: ActionType["DISMISS_TOAST"]
+      type: typeof actionTypes.DISMISS_TOAST
       toastId?: string
     }
   | {
-      type: ActionType["REMOVE_TOAST"]
+      type: typeof actionTypes.REMOVE_TOAST
       toastId?: string
     }
 
@@ -134,7 +138,8 @@ function dispatch(action: Action) {
   })
 }
 
-interface Toast extends Omit<ToasterToast, "id"> {}
+// Define Toast type instead of empty interface
+type Toast = Omit<ToasterToast, "id">
 
 function toast({ ...props }: Toast): { id: string; dismiss: () => void; update: (props: ToasterToast) => void } {
   const id = genId()

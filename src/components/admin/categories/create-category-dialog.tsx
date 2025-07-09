@@ -21,7 +21,7 @@ export function CreateCategoryDialog({ open, onOpenChange }: CreateCategoryDialo
     setLoading(true)
 
     try {
-      const response = await fetch('https://api.thegpdn.org/api/admin/addthreadCategory', {
+      const response = await fetch('https://api.thegpdn.org/api/blog/AddCategory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

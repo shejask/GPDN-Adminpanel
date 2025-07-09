@@ -1,7 +1,10 @@
 "use client"
 
 import { Column } from "@tanstack/react-table"
-import { ChevronsUpDown, ArrowUpDown, EyeOff } from "lucide-react"
+import { ChevronsUpDown, SortAsc, SortDesc } from "lucide-react"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { EyeOff } from "lucide-react"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -28,9 +31,9 @@ export function DataTableColumnHeader<TData, TValue>({
       >
         <span className="text-sm font-medium">{title}</span>
         {column.getIsSorted() === "desc" ? (
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <SortDesc className="ml-2 h-4 w-4" />
         ) : column.getIsSorted() === "asc" ? (
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <SortAsc className="ml-2 h-4 w-4" />
         ) : (
           <ChevronsUpDown className="ml-2 h-4 w-4" />
         )}

@@ -208,13 +208,14 @@ export function CreateResourceDialog() {
                 if (parsedError.message) {
                   errorDetail = parsedError.message;
                 }
-              } catch (e) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              } catch (_parseError) {
                 // If it's not JSON, use the raw text
                 errorDetail = errorResponse;
               }
             }
-          } catch (e) {
-            console.error('Failed to parse error response:', e);
+          } catch (error) {
+            console.error('Failed to parse error response:', error);
           }
           throw new Error(`Failed to create resource: ${errorDetail}`)
         }
@@ -232,8 +233,9 @@ export function CreateResourceDialog() {
       setFiles([])
       setSelectedCategory("")
       window.location.reload()
-    } catch (error: any) {
-      const errorMessage = error.message || "Failed to create resource";
+    } catch (error: unknown) {
+      const errorObj = error instanceof Error ? error : { message: "Failed to create resource" };
+      const errorMessage = errorObj.message;
       toast.error(errorMessage);
       console.error("Error creating resource:", error)
     } finally {

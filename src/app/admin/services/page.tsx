@@ -1,7 +1,3 @@
-import { DataTable } from "@/components/admin/services/data-table"
-import { columns } from "@/components/admin/services/columns"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CreateServiceDialog } from "@/components/admin/services/create-service-dialog"
 import { ServicesPageTabs } from "@/components/admin/services/services-page-tabs"
 
 async function getServices() {

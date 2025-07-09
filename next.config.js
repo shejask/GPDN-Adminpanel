@@ -10,7 +10,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ['api.thegpdn.org', '1000wordphilosophy.com'],
+    domains: ['api.thegpdn.org', '1000wordphilosophy.com', 'pub-33c4155a02fd4f2aae817c77076bde04.r2.dev'],
   },
 }
 

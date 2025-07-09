@@ -32,7 +32,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
     setLoading(true)
 
     try {
-      const response = await fetch('https://api.thegpdn.org/api/admin/editCategory', {
+      const response = await fetch('https://api.thegpdn.org/api/blog/EditCategory', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        const response = await fetch('https://api.thegpdn.org/api/admin/deletethreadCategory', {
+        const response = await fetch('https://api.thegpdn.org/api/blog/DeleteCategory', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

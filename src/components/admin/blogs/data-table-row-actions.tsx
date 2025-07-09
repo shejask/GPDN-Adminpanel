@@ -7,7 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
@@ -18,6 +17,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "react-hot-toast"
 import { Blog } from "./columns"
 import { useEffect } from "react"
+import Image from "next/image"
+import dynamic from "next/dynamic"
+
+// Dynamically import React Quill to avoid SSR issues
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+  loading: () => <div className="h-64 border rounded-md flex items-center justify-center">Loading editor...</div>,
+})
 import {
   Select,
   SelectContent,
@@ -34,7 +41,31 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
   const blog = row.original as Blog
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [categories, setCategories] = useState<Array<{ _id: string; category: string }>>([])
+  const [categories, setCategories] = useState<Array<{ _id: string; category: string }>>([])  
+  const [editorLoaded, setEditorLoaded] = useState(false)
+  
+  // Helper function to get category string value
+  const getCategoryString = (category: string | Record<string, unknown>): string => {
+    if (typeof category === 'string') {
+      return category
+    }
+    if (category && typeof category === 'object') {
+      return (category.category as string) || (category.name as string) || String(category)
+    }
+    return ''
+  }
+
+  // Helper function to get category ID
+  const getCategoryId = (category: string | Record<string, unknown>): string => {
+    if (typeof category === 'string') {
+      return category
+    }
+    if (category && typeof category === 'object') {
+      return (category._id as string) || (category.id as string) || String(category)
+    }
+    return ''
+  }
+
   const [formData, setFormData] = useState({
     _id: blog._id,
     title: blog.title,
@@ -43,23 +74,34 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
     authorId: blog.authorId,
     tags: blog.tags,
     imageURL: blog.imageURL,
-    category: blog.category,
-    categoryName: "" // Add this to store category name
+    category: getCategoryString(blog.category),
+    categoryId: getCategoryId(blog.category),
+    categoryName: getCategoryString(blog.category)
   })
 
-  // Add this effect to set initial category name
+  // Initialize editor on client side only
+  useEffect(() => {
+    setEditorLoaded(true)
+  }, [])
+
+  // Fetch categories when component mounts
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('https://api.thegpdn.org/api/admin/fetchthreadCategory')
+        const response = await fetch('https://api.thegpdn.org/api/blog/fetchCategory')
         const data = await response.json()
         if (data.success) {
           setCategories(data.data)
           // Find and set the initial category name
-          const initialCategory = data.data.find((cat: { _id: string; category: string }) => cat._id === blog.category)
+          const blogCategoryString = getCategoryString(blog.category)
+          const initialCategory = data.data.find((cat: { _id: string; category: string }) => 
+            cat._id === getCategoryId(blog.category) || cat.category === blogCategoryString
+          )
           if (initialCategory) {
             setFormData(prev => ({
               ...prev,
+              category: initialCategory.category,
+              categoryId: initialCategory._id,
               categoryName: initialCategory.category
             }))
           }
@@ -73,8 +115,32 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
     }
 
     fetchCategories()
-  }, [])
+  }, [blog.category])
 
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      ['link', 'image'],
+      ['blockquote', 'code-block'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }],
+      ['clean']
+    ],
+  }
+  
+  const quillFormats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet', 'indent',
+    'link', 'image',
+    'blockquote', 'code-block',
+    'color', 'background',
+    'align'
+  ]
+  
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -94,12 +160,18 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
     setLoading(true)
 
     try {
-      const response = await fetch('https://api.thegpdn.org/api/admin/editNewsAndBlogs', {
+      // Send the appropriate category value based on what the API expects
+      const submitData = {
+        ...formData,
+        category: formData.categoryId || formData.category // Use ID if available, otherwise use name
+      }
+      
+      const response = await fetch('https://api.thegpdn.org/api/blog/EditNewsAndBlogs', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       })
 
       const data = await response.json()
@@ -118,57 +190,6 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
     }
   }
 
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this blog?')) {
-      try {
-        const response = await fetch('https://api.thegpdn.org/api/admin/deleteNewsAndBlogs', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ BlogId: blog._id })
-        })
-
-        const data = await response.json()
-        if (data.success) {
-          toast.success('Blog deleted successfully')
-          window.location.reload()
-        } else {
-          toast.error('Failed to delete blog')
-        }
-      } catch (error) {
-        toast.error('Error deleting blog')
-        console.error('Error:', error)
-      }
-    }
-  }
-
-  const handleApproveOrDecline = async (approve: boolean) => {
-    try {
-      const response = await fetch('https://api.thegpdn.org/api/admin/approveORdeclineBlogs', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          _id: blog._id,
-          actionStatus: approve
-        })
-      })
-
-      const data = await response.json()
-      if (data.success) {
-        toast.success(`Blog ${approve ? 'approved' : 'declined'} successfully`)
-        window.location.reload()
-      } else {
-        toast.error(`Failed to ${approve ? 'approve' : 'decline'} blog`)
-      }
-    } catch (error) {
-      toast.error(`Error ${approve ? 'approving' : 'declining'} blog`)
-      console.error('Error:', error)
-    }
-  }
-
   return (
     <>
       <DropdownMenu>
@@ -183,15 +204,11 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>Edit</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleApproveOrDecline(true)}>Approve</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleApproveOrDecline(false)}>Decline</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleDelete} className="text-red-600">Delete</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Blog</DialogTitle>
           </DialogHeader>
@@ -216,12 +233,19 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
             </div>
             <div className="grid gap-2">
               <Label htmlFor="content">Content</Label>
-              <Textarea
-                id="content"
-                value={formData.content}
-                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                required
-              />
+              <div className="min-h-[300px]">
+                {editorLoaded && (
+                  <ReactQuill
+                    theme="snow"
+                    value={formData.content}
+                    onChange={(content) => setFormData(prev => ({ ...prev, content }))}
+                    modules={quillModules}
+                    formats={quillFormats}
+                    placeholder="Enter blog content here..."
+                    className="h-[250px] mb-12"
+                  />
+                )}
+              </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="category">Category</Label>
@@ -232,6 +256,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
                   setFormData(prev => ({
                     ...prev,
                     category: value,
+                    categoryId: selectedCategory ? selectedCategory._id : '',
                     categoryName: selectedCategory ? selectedCategory.category : ''
                   }))
                 }}
@@ -266,10 +291,12 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
               <Label htmlFor="image">Image</Label>
               {formData.imageURL && (
                 <div className="mb-2">
-                  <img 
+                  <Image 
                     src={formData.imageURL} 
                     alt="Blog image" 
                     className="max-w-full h-auto rounded-md"
+                    width={300}
+                    height={200}
                   />
                 </div>
               )}

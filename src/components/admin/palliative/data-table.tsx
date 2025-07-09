@@ -18,7 +18,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { CreatePalliativeDialog } from "./create-palliative-dialog"
-import { EditPalliativeDialog } from "./edit-palliative-dialog"
+// Dialog is used in another component
+// import { EditPalliativeDialog } from "./edit-palliative-dialog"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -38,7 +39,19 @@ export function PalliativeTable<TData, TValue>({
         const result = await response.json()
         if (result.success) {
           // Transform the data to match the expected format
-          const transformedData = result.data.map((unit: any) => ({
+          const transformedData = result.data.map((unit: { 
+            _id: string; 
+            name: string; 
+            state: string; 
+            country: string; 
+            address?: string; 
+            contact?: string; 
+            email?: string; 
+            website?: string;
+            services?: { _id: string; service: string };
+            contactDetails?: string;
+            createdAt?: string;
+          }) => ({
             _id: unit._id,
             name: unit.name,
             state: unit.state,

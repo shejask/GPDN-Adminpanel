@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import dynamic from "next/dynamic"
+import Image from "next/image"
 
 // Dynamically import React Quill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), {
@@ -43,6 +44,8 @@ export function CreateBlogDialog() {
     category: "",
     categoryName: ""
   })
+  
+  const [tagInput, setTagInput] = useState("")
 
   // Initialize editor on client side only
   useEffect(() => {
@@ -53,7 +56,7 @@ export function CreateBlogDialog() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('https://api.thegpdn.org/api/admin/fetchthreadCategory')
+        const response = await fetch('https://api.thegpdn.org/api/blog/fetchCategory')
         const data = await response.json()
         if (data.success) {
           setCategories(data.data)
@@ -93,6 +96,13 @@ export function CreateBlogDialog() {
     'align'
   ]
 
+  // Helper function to convert data URL to File object
+  const dataURLtoFile = async (dataUrl: string, filename: string): Promise<File> => {
+    const res = await fetch(dataUrl)
+    const blob = await res.blob()
+    return new File([blob], filename, { type: blob.type })
+  }
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -111,24 +121,26 @@ export function CreateBlogDialog() {
     e.preventDefault()
     setLoading(true)
 
-    // Create a separate payload with only the required fields for the API
-    const payload = {
-      title: formData.title,
-      content: formData.content,
-      description: formData.description,
-      authorId: formData.authorId,
-      category: formData.category,
-      tags: formData.tags,
-      file: formData.imageURL  // Using 'file' as required by the API
+    // Create FormData object for the API
+    const formDataToSend = new FormData()
+    formDataToSend.append('title', formData.title)
+    formDataToSend.append('content', formData.content)
+    formDataToSend.append('description', formData.description)
+    formDataToSend.append('authorId', formData.authorId)
+    formDataToSend.append('category', formData.category)
+    // Format tags as a JSON string array as expected by the API
+    formDataToSend.append('tags', JSON.stringify(formData.tags))
+    
+    // Convert base64 image to file if it exists
+    if (formData.imageURL && formData.imageURL.startsWith('data:')) {
+      const file = await dataURLtoFile(formData.imageURL, 'blog-thumbnail.jpg')
+      formDataToSend.append('file', file)
     }
 
     try {
       const response = await fetch('https://api.thegpdn.org/api/blog/AddNewsAndBlogs', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
+        body: formDataToSend
       })
 
       const data = await response.json()
@@ -203,7 +215,7 @@ export function CreateBlogDialog() {
               )}
             </div>
           </div>
-          <div className="grid gap-2">
+          <div className="grid gap-2 pt-5">
             <Label htmlFor="category">Category</Label>
             <Select 
               value={formData.category}
@@ -226,7 +238,7 @@ export function CreateBlogDialog() {
                   <SelectItem 
                     className="text-black" 
                     key={category._id} 
-                    value={category.category}
+                    value={category._id}
                   >
                     {category.category}
                   </SelectItem>
@@ -235,14 +247,66 @@ export function CreateBlogDialog() {
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="tags">Tags (comma-separated)</Label>
-            <Input
-              id="tags"
-              value={formData.tags.join(',')}
-              onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value ? e.target.value.split(',').map(tag => tag.trim()) : [] }))}
-              placeholder="tag1, tag2, tag3"
-              required
-            />
+            <Label htmlFor="tags">Tags</Label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {formData.tags.map((tag, index) => (
+                <div 
+                  key={index} 
+                  className="bg-primary/10 text-primary px-2 py-1 rounded-md flex items-center gap-1"
+                >
+                  <span>{tag}</span>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setFormData(prev => ({
+                        ...prev,
+                        tags: prev.tags.filter((_, i) => i !== index)
+                      }))
+                    }}
+                    className="text-primary hover:text-primary/80"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                id="tagInput"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                placeholder="Enter a tag"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && tagInput.trim()) {
+                    e.preventDefault()
+                    if (!formData.tags.includes(tagInput.trim())) {
+                      setFormData(prev => ({
+                        ...prev,
+                        tags: [...prev.tags, tagInput.trim()]
+                      }))
+                    }
+                    setTagInput('')
+                  }
+                }}
+              />
+              <Button 
+                type="button" 
+                onClick={() => {
+                  if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+                    setFormData(prev => ({
+                      ...prev,
+                      tags: [...prev.tags, tagInput.trim()]
+                    }))
+                    setTagInput('')
+                  }
+                }}
+              >
+                Add
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              Press Enter or click Add to add a tag
+            </p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="image">Thumbnail</Label>
@@ -256,10 +320,12 @@ export function CreateBlogDialog() {
             {formData.imageURL && (
               <div className="mt-2">
                 <p className="text-sm mb-1">Preview:</p>
-                <img 
+                <Image 
                   src={formData.imageURL} 
                   alt="Blog image preview" 
                   className="max-h-32 rounded-md border" 
+                  width={200}
+                  height={150}
                 />
               </div>
             )}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -43,7 +44,7 @@ export function EditThreadDialog({ open = false, onOpenChange, thread }: EditThr
   const [isOpen, setIsOpen] = useState(open)
   const [loading, setLoading] = useState(false)
   const [loadingUsers, setLoadingUsers] = useState(false)
-  const [users, setUsers] = useState<any[]>([])
+  const [users, setUsers] = useState<Array<{ _id: string; fullName: string; email: string; imageURL?: string }>>([])
   const [tagInput, setTagInput] = useState("")
   
   // Parse tags from thread
@@ -52,11 +53,11 @@ export function EditThreadDialog({ open = false, onOpenChange, thread }: EditThr
       return threadTags.map(tag => {
         try {
           return JSON.parse(tag);
-        } catch (e) {
+        } catch {
           return tag;
         }
       }).flat();
-    } catch (e) {
+    } catch {
       return [];
     }
   };
@@ -331,10 +332,12 @@ export function EditThreadDialog({ open = false, onOpenChange, thread }: EditThr
                 {formData.thumbnail ? (
                   <div className="space-y-3">
                     <div className="relative overflow-hidden rounded-md aspect-video max-h-48 flex items-center justify-center bg-muted">
-                      <img 
+                      <Image 
                         src={formData.thumbnail} 
                         alt="Thumbnail preview" 
                         className="object-cover w-full h-full" 
+                        width={400}
+                        height={225}
                       />
                     </div>
                     <div className="flex justify-between items-center">

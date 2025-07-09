@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Row } from "@tanstack/react-table"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import {
@@ -22,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// Select imports removed as they were unused
 import { MoreHorizontalIcon } from "lucide-react"
 import { toast } from "react-hot-toast"
 import { Resource } from "./columns"
@@ -102,7 +103,9 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
   const [tags, setTags] = useState<string[]>(resource.tags || [])
   const [newFiles, setNewFiles] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
-  const [categories, setCategories] = useState<Category[]>([])
+  // Categories are fetched and used for dropdown selection
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -140,7 +143,9 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
     })
   }
 
-  const handleApproveOrDecline = async (approve: boolean) => {
+  // This function is kept for future use but currently not called
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _handleApproveOrDecline = async (approve: boolean) => {
     try {
       const response = await fetch('https://api.thegpdn.org/api/admin/approveORdeclineResource', {
         method: 'PATCH',
@@ -290,7 +295,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
           <DialogHeader>
             <DialogTitle>Edit Resource</DialogTitle>
             <DialogDescription>
-              Make changes to the resource here. Click save when you're done.
+              Make changes to the resource here. Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEdit}>
@@ -345,10 +350,12 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
                           <div key={index} className="flex items-center justify-between py-1 border-b">
                             <div className="flex items-center gap-2">
                               {fileExt && ['jpg', 'jpeg', 'png', 'gif'].includes(fileExt) ? (
-                                <img 
+                                <Image 
                                   src={fileUrl} 
                                   alt={fileName} 
-                                  className="w-8 h-8 object-cover rounded"
+                                  width={32}
+                                  height={32}
+                                  className="object-cover rounded"
                                 />
                               ) : (
                                 <div className="w-8 h-8 flex items-center justify-center bg-gray-100 rounded">

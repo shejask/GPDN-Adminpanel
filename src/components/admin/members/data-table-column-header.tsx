@@ -2,7 +2,7 @@
 
 import { Column } from "@tanstack/react-table"
 import { ArrowDownIcon, ArrowUpIcon, CaretSortIcon } from "@radix-ui/react-icons"
-import { cn } from "@/lib/utils"
+// cn import removed as it was unused
 import { Button } from "@/components/ui/button"
 
 interface DataTableColumnHeaderProps<TData, TValue> {

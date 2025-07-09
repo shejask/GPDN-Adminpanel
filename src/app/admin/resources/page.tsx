@@ -1,11 +1,25 @@
 import { DataTable } from "@/components/admin/resources/data-table"
 import { columns } from "@/components/admin/resources/columns"
-import { Button } from "@/components/ui/button"
-import { PlusIcon, FileTextIcon } from "@radix-ui/react-icons"
 import { CreateResourceDialog } from "@/components/admin/resources/create-resource-dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FileText, CheckCircle, Clock, AlertCircle } from "lucide-react"
+
+interface Resource {
+  id: string;
+  title: string;
+  description?: string;
+  approvalStatus: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  author?: {
+    id: string;
+    name: string;
+  };
+  category?: {
+    id: string;
+    name: string;
+  };
+}
 
 async function getResources() {
   const res = await fetch('https://api.thegpdn.org/api/resource/fetchResource', { cache: 'no-store' })
@@ -15,8 +29,8 @@ async function getResources() {
 
 export default async function ResourcesPage() {
   const resources = await getResources()
-  const approvedResources = resources.filter((resource: any) => resource.approvalStatus)
-  const pendingResources = resources.filter((resource: any) => !resource.approvalStatus)
+  const approvedResources = resources.filter((resource: Resource) => resource.approvalStatus)
+  const pendingResources = resources.filter((resource: Resource) => !resource.approvalStatus)
 
   return (
     <div className="container mx-auto space-y-6">

@@ -12,6 +12,8 @@ export type ToastProps = {
   variant?: "default" | "destructive"
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  className?: string
+  children?: React.ReactNode
 }
 
 export type ToastActionElement = React.ReactNode
@@ -29,27 +31,13 @@ export const ToastViewport: React.FC<{ className?: string }> = ({ className, ...
   )
 }
 
-export const Toast: React.FC<{ 
-  className?: string,
-  variant?: "default" | "destructive",
-  children?: React.ReactNode,
-  id?: string,
-  title?: React.ReactNode,
-  description?: React.ReactNode,
-  action?: React.ReactNode,
-  open?: boolean,
-  onOpenChange?: (open: boolean) => void
-}> = ({ 
+export const Toast: React.FC<ToastProps> = ({ 
   className, 
   variant = "default", 
   children,
-  // Extract the props that shouldn't be passed to the div
-  id,
-  title,
-  description,
-  action,
-  open,
-  onOpenChange,
+  // These props are used by the toast system but not directly in this component
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  id, title, description, action, open, onOpenChange,
   ...props 
 }) => {
   const variantClasses = variant === "destructive" 

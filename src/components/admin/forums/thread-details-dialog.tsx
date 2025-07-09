@@ -13,7 +13,8 @@ import {
 import { formatDistanceToNow, format } from "date-fns"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ScrollArea } from "@/components/ui/scroll-area"
+// ScrollArea import removed as it was unused
+import Image from "next/image"
 import { Thread } from "./columns"
 
 interface ThreadDetailsDialogProps {
@@ -31,11 +32,11 @@ export function ThreadDetailsDialog({ open = false, onOpenChange, thread }: Thre
       return threadTags.map(tag => {
         try {
           return JSON.parse(tag);
-        } catch (e) {
+        } catch {
           return tag;
         }
       }).flat();
-    } catch (e) {
+    } catch {
       return [];
     }
   };
@@ -74,10 +75,12 @@ export function ThreadDetailsDialog({ open = false, onOpenChange, thread }: Thre
             <div className="bg-gray-800 rounded-lg p-4 shadow-md">
               <h3 className="text-lg font-semibold mb-2 text-blue-400">Thumbnail</h3>
               <div className="relative overflow-hidden rounded-md aspect-video max-h-48 flex items-center justify-center bg-gray-700 border border-gray-700">
-                <img 
+                <Image 
                   src={thread.thumbnail} 
                   alt="Thread thumbnail" 
-                  className="object-cover w-full h-full" 
+                  width={400}
+                  height={225}
+                  className="object-cover" 
                 />
               </div>
             </div>

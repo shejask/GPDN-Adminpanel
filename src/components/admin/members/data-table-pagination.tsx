@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
 
 interface DataTablePaginationProps<TData> {

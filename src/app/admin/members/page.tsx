@@ -1,12 +1,22 @@
 import { DataTable } from "@/components/admin/members/data-table"
 import { columns } from "@/components/admin/members/columns"
-import { Button } from "@/components/ui/button"
-import { PlusIcon } from "@radix-ui/react-icons"
 import { RegisterMemberDialog } from "@/components/admin/members/register-member-dialog"
 import { SendInvitationDialog } from "@/components/admin/members/send-invitation-dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Users, UserCheck, UserX, UserPlus } from "lucide-react"
+
+interface Member {
+  id: string;
+  name?: string;
+  email?: string;
+  registrationStatus: "approved" | "pending" | "decline";
+  createdAt?: string;
+  updatedAt?: string;
+  profile?: {
+    avatar?: string;
+    bio?: string;
+  };
+}
 
 async function getMembers() {
   const res = await fetch('https://api.thegpdn.org/api/admin/fetchUser', { cache: 'no-store' })
@@ -16,9 +26,9 @@ async function getMembers() {
 
 export default async function MembersPage() {
   const members = await getMembers()
-  const approvedMembers = members.filter((member: any) => member.registrationStatus === "approved")
-  const pendingMembers = members.filter((member: any) => member.registrationStatus === "pending")
-  const declinedMembers = members.filter((member: any) => member.registrationStatus === "decline")
+  const approvedMembers = members.filter((member: Member) => member.registrationStatus === "approved")
+  const pendingMembers = members.filter((member: Member) => member.registrationStatus === "pending")
+  const declinedMembers = members.filter((member: Member) => member.registrationStatus === "decline")
 
   return (
     <div className="container mx-auto space-y-6">

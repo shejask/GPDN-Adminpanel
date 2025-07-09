@@ -1,15 +1,10 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, Trash2, CheckCircle2, Eye, EyeOff } from "lucide-react"
+import { Trash2, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "react-hot-toast"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+// Dropdown imports removed as they were unused
 import { DataTableColumnHeader } from "./data-table-column-header"
 
 export type Palliative = {

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -18,7 +19,7 @@ import { PlusIcon } from "@radix-ui/react-icons"
 import { toast } from "react-hot-toast"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// Select imports removed as they were unused
 
 export function RegisterMemberDialog() {
   const router = useRouter()
@@ -296,10 +297,12 @@ export function RegisterMemberDialog() {
               {formData.imageURL && (
                 <div className="mt-2">
                   <p className="text-sm mb-1">Preview:</p>
-                  <img 
+                  <Image 
                     src={formData.imageURL} 
                     alt="Profile preview" 
-                    className="max-h-32 rounded-md border" 
+                    width={128}
+                    height={128}
+                    className="rounded-md border object-contain" 
                   />
                 </div>
               )}

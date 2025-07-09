@@ -47,7 +47,7 @@ export function EditPalliativeDialog({ palliative }: EditPalliativeDialogProps) 
         const data = await response.json()
         if (data.success) {
           // Map the service data to match the expected format
-          const mappedServices = data.data.map((item: any) => ({
+          const mappedServices = data.data.map((item: { _id: string; service: string }) => ({
             _id: item._id,
             name: item.service // Use 'service' field as the name
           }))

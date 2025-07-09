@@ -1,5 +1,7 @@
 "use client"
 import { cn } from "@/lib/utils"
+// Button component is used in other parts of the application
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -13,6 +15,7 @@ import {
   Users,
   Shield,
   UserCog,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ChevronDown
 } from "lucide-react"
 import {

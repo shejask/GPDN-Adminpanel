@@ -50,14 +50,7 @@ async function deleteUser(userId: string) {
   return res.json()
 }
 
-async function inviteUser(phoneNumber: string) {
-  const res = await fetch('https://api.thegpdn.org/api/admin/adminInvitationToUser', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ number: phoneNumber })
-  })
-  return res.json()
-}
+// inviteUser function removed as it was unused
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -107,7 +100,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
       await approveUser(member._id)
       toast.success('Member approved successfully')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('Failed to approve member')
     }
   }
@@ -117,7 +110,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
       await declineUser(member._id)
       toast.success('Member declined successfully')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('Failed to decline member')
     }
   }
@@ -127,19 +120,12 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
       await deleteUser(member._id)
       toast.success('Member deleted successfully')
       router.refresh()
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete member')
     }
   }
 
-  const handleInvite = async () => {
-    try {
-      await inviteUser(member.phoneNumber)
-      toast.success('Invitation sent successfully')
-    } catch (error) {
-      toast.error('Failed to send invitation')
-    }
-  }
+  // Removed unused handleInvite function
   
   const handleViewDetails = () => {
     setIsDetailOpen(true)

@@ -6,8 +6,15 @@ import { DataTable } from "@/components/admin/categories/data-table"
 import { columns } from "@/components/admin/categories/columns"
 import { CreateCategoryDialog } from "@/components/admin/categories/create-category-dialog"
 
+interface Category {
+  _id: string;
+  category: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState<any[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -17,7 +24,7 @@ export default function CategoriesPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('https://api.thegpdn.org/api/admin/fetchthreadCategory')
+      const response = await fetch('https://api.thegpdn.org/api/blog/fetchCategory')
       const data = await response.json()
       if (data.success) {
         setCategories(data.data)

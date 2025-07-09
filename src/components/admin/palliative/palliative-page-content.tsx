@@ -1,7 +1,8 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Hospital } from "lucide-react"
+// Hospital icon not currently used
+// import { Hospital } from "lucide-react"
 import { PalliativeTable } from "@/components/admin/palliative/data-table"
 import { columns } from "@/components/admin/palliative/columns"
 

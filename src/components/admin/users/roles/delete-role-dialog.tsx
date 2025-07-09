@@ -65,7 +65,7 @@ export function DeleteRoleDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the role "{roleName}". This action cannot be undone.
+            This will permanently delete the role &quot;{roleName}&quot;. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

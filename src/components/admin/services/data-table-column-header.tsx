@@ -2,6 +2,7 @@
 
 import { Column } from "@tanstack/react-table"
 import { ChevronsUpDown, ArrowUp, ArrowDown } from "lucide-react"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 

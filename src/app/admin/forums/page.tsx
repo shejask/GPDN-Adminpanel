@@ -1,11 +1,21 @@
 import { DataTable } from "@/components/admin/forums/data-table"
 import { columns } from "@/components/admin/forums/columns"
-import { Button } from "@/components/ui/button"
-import { PlusIcon } from "@radix-ui/react-icons"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { MessageSquare, CheckCircle, Clock, AlertCircle } from "lucide-react"
 import { NewThreadButtonClient } from "@/components/admin/forums/new-thread-button"
+
+interface Thread {
+  id: string;
+  title: string;
+  content: string;
+  approvalStatus: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  author?: {
+    id: string;
+    name: string;
+  };
+}
 
 async function getThreads() {
   const res = await fetch('https://api.thegpdn.org/api/thread/FetchThread', { cache: 'no-store' })
@@ -15,8 +25,8 @@ async function getThreads() {
 
 export default async function ForumsPage() {
   const threads = await getThreads()
-  const approvedThreads = threads.filter((thread: any) => thread.approvalStatus === true)
-  const pendingThreads = threads.filter((thread: any) => thread.approvalStatus === false)
+  const approvedThreads = threads.filter((thread: Thread) => thread.approvalStatus === true)
+  const pendingThreads = threads.filter((thread: Thread) => thread.approvalStatus === false)
 
   return (
     <div className="container mx-auto space-y-6">

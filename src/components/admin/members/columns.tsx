@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -57,10 +58,12 @@ export const columns: ColumnDef<Member>[] = [
       const imageURL = row.getValue("imageURL") as string | undefined
       return imageURL ? (
         <div className="relative h-10 w-10 overflow-hidden rounded-md">
-          <img
+          <Image
             src={imageURL}
             alt="Profile picture"
-            className="object-cover h-full w-full"
+            width={40}
+            height={40}
+            className="object-cover"
           />
         </div>
       ) : (

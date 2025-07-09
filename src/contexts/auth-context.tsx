@@ -70,8 +70,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         throw new Error(data.message || "Login failed")
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to login")
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to login'
+      toast.error(errorMessage)
       console.error("Login error:", error)
     } finally {
       setIsLoading(false)

@@ -11,7 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
 import { Resource } from "./columns";
-import { ExternalLink, FileText, Image } from "lucide-react";
+import { ExternalLink, FileText } from "lucide-react";
+import Image from "next/image";
 
 interface ResourceDetailsDialogProps {
   open: boolean;
@@ -19,9 +20,11 @@ interface ResourceDetailsDialogProps {
   resourceId: string;
 }
 
-interface ResourceDetailsData extends Resource {
-  // Additional fields that might be in the API response but not in the table
-}
+// Extended type with potential additional fields from API response
+type ResourceDetailsData = Resource & {
+  // Additional fields can be added here as needed
+  additionalInfo?: string;
+};
 
 export function ResourceDetailsDialog({
   open,
@@ -66,7 +69,7 @@ export function ResourceDetailsDialog({
   }, [open, resourceId, toast]);
 
   // Parse tags from string format to array if needed
-  const renderTags = (tags: any[]) => {
+  const renderTags = (tags: (string | string[])[]) => {
     if (!tags || tags.length === 0) return <span>No tags</span>;
     
     const parsedTags = tags.map(tag => {
@@ -74,7 +77,9 @@ export function ResourceDetailsDialog({
         try {
           // Try to parse JSON array string
           return JSON.parse(tag.replace(/^[\s"]+|[\s"]+$/g, ''));
-        } catch (e) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_error) {
+          // If parsing fails, return the original tag
           return tag;
         }
       }
@@ -102,10 +107,12 @@ export function ResourceDetailsDialog({
           
           return isImage ? (
             <div key={index} className="relative aspect-video rounded-md overflow-hidden border">
-              <img 
+              <Image 
                 src={file} 
                 alt={`Resource file ${index + 1}`}
-                className="object-cover w-full h-full"
+                className="object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
               <a 
                 href={file} 

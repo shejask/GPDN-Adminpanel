@@ -8,8 +8,9 @@ import {
   VisibilityState,
   flexRender,
   getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
+  // These imports are not currently used but may be needed for future filtering features
+  // getFacetedRowModel,
+  // getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,

@@ -1,12 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { 
-  Users, MessageSquare, FileText, BookOpen, TrendingUp, 
-  UserPlus, Calendar, Clock, CheckCircle, AlertCircle,
-  ArrowUpRight, Activity, BarChart3, PieChart
+  Users, MessageSquare, FileText, BookOpen, 
+  UserPlus, ArrowUpRight, Activity, BarChart3, PieChart
 } from "lucide-react"
 import Link from "next/link"
 

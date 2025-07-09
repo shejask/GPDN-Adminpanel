@@ -67,7 +67,8 @@ export function EditResourceDialog({
                   }
                 });
               }
-            } catch (e) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_error) {
               parsedTags.push(tag.replace(/[\[\]"]/g, '').trim());
             }
           } else {

@@ -1,6 +1,7 @@
  "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -9,11 +10,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PlusIcon, UploadIcon, CheckIcon, Cross2Icon } from "@radix-ui/react-icons"
+import { PlusIcon, UploadIcon, Cross2Icon } from "@radix-ui/react-icons"
 import { toast } from "react-hot-toast"
 import dynamic from "next/dynamic"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -42,7 +42,7 @@ export function CreateThreadDialog({ open = false, onOpenChange }: CreateThreadD
   const [isOpen, setIsOpen] = useState(open)
   const [loading, setLoading] = useState(false)
   const [loadingUsers, setLoadingUsers] = useState(false)
-  const [users, setUsers] = useState<any[]>([])
+  const [users, setUsers] = useState<Array<{ _id: string; fullName: string; email: string; imageURL?: string }>>([])
   const [tagInput, setTagInput] = useState("")
   const [tags, setTags] = useState<string[]>([])
   const [formData, setFormData] = useState({
@@ -309,10 +309,12 @@ export function CreateThreadDialog({ open = false, onOpenChange }: CreateThreadD
                 {formData.thumbnail ? (
                   <div className="space-y-3">
                     <div className="relative overflow-hidden rounded-md aspect-video max-h-48 flex items-center justify-center bg-muted">
-                      <img 
+                      <Image 
                         src={formData.thumbnail} 
                         alt="Thumbnail preview" 
                         className="object-cover w-full h-full" 
+                        width={400}
+                        height={225}
                       />
                     </div>
                     <div className="flex justify-between items-center">

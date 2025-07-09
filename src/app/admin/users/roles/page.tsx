@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { DataTable } from "@/components/admin/users/roles/data-table"
 import { columns } from "@/components/admin/users/roles/columns"
 import { Button } from "@/components/ui/button"

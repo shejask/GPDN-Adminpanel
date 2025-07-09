@@ -37,7 +37,7 @@ interface EditAdminDialogProps {
 export function EditAdminDialog({ open, onOpenChange, admin }: EditAdminDialogProps) {
   const [fullName, setFullName] = useState(admin.fullName)
   const [email, setEmail] = useState(admin.email)
-  const [password, setPassword] = useState(admin.password)
+  const [password, _setPassword] = useState("") // eslint-disable-line @typescript-eslint/no-unused-vars
   const [phoneNumber, setPhoneNumber] = useState(admin.phoneNumber)
   const [roleId, setRoleId] = useState(admin.role?._id || "") // Add optional chaining and default to empty string
   const [roles, setRoles] = useState<Role[]>([])

@@ -4,13 +4,37 @@ import React, { useState } from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import Image from "next/image"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
-import { CheckCircle, XCircle, Eye } from "lucide-react"
+import { Eye } from "lucide-react"
 import { ResourceApprovalActions } from "./ResourceApprovalActions"
 import { ResourceDetailsDialog } from "./ResourceDetailsDialog"
-import { useToast } from "@/components/ui/use-toast"
+
+// Separate component for view button to properly use React hooks
+function ViewButtonCell({ resource }: { resource: Resource }) {
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+  
+  return (
+    <>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        onClick={() => setShowDetailsDialog(true)} 
+        title="View Details"
+      >
+        <Eye className="h-4 w-4" />
+      </Button>
+      {showDetailsDialog && (
+        <ResourceDetailsDialog
+          resourceId={resource._id}
+          open={showDetailsDialog}
+          onOpenChange={setShowDetailsDialog}
+        />
+      )}
+    </>
+  );
+}
 
 export type Resource = {
   _id: string
@@ -45,10 +69,12 @@ export const columns: ColumnDef<Resource>[] = [
       if (fileExt === 'jpg' || fileExt === 'jpeg' || fileExt === 'png' || fileExt === 'gif') {
         return (
           <div className="flex items-center">
-            <img 
+            <Image 
               src={firstFile} 
               alt={row.getValue("title") as string} 
-              className="w-16 h-16 object-cover rounded"
+              width={64}
+              height={64}
+              className="object-cover rounded"
             />
             {files.length > 1 && <span className="ml-2 text-xs text-gray-500">+{files.length - 1} more</span>}
           </div>
@@ -88,10 +114,12 @@ export const columns: ColumnDef<Resource>[] = [
         return (
           <div className="flex items-center gap-2">
             {imageURL ? (
-              <img 
+              <Image 
                 src={imageURL} 
                 alt={fullName} 
-                className="w-8 h-8 rounded-full object-cover"
+                width={32}
+                height={32}
+                className="rounded-full object-cover"
               />
             ) : (
               <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
@@ -173,24 +201,7 @@ export const columns: ColumnDef<Resource>[] = [
     id: "view",
     header: "View",
     cell: ({ row }) => {
-      const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-      return (
-        <>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setShowDetailsDialog(true)} 
-            title="View Details"
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-          <ResourceDetailsDialog
-            open={showDetailsDialog}
-            onOpenChange={setShowDetailsDialog}
-            resourceId={row.original._id}
-          />
-        </>
-      )
+      return <ViewButtonCell resource={row.original} />;
     },
   },
   // 8. Actions (always last)

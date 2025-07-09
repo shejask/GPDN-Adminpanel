@@ -44,10 +44,11 @@ export const ResourceApprovalActions: React.FC<ResourceApprovalActionsProps> = (
         variant: "default",
       });
       window.location.reload();
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       toast({
         title: "Error",
-        description: error.message || `Failed to ${approve ? 'approve' : 'reject'} the resource. Please try again.`,
+        description: errorMessage || `Failed to ${approve ? 'approve' : 'reject'} the resource. Please try again.`,
         variant: "destructive",
       });
     } finally {

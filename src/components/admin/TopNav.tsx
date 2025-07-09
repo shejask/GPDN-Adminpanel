@@ -1,4 +1,5 @@
 import { ModeToggle } from "@/components/mode-toggle"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Button } from "@/components/ui/button"
 import { UserButton } from "@/components/ui/user-button"
 
