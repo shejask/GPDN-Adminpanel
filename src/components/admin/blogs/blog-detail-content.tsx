@@ -38,8 +38,13 @@ export function BlogDetailContent({ blog }: BlogDetailContentProps) {
     if (typeof category === 'string') {
       return category
     }
-    // If it's an object, try to get the name property
+    // If it's an object, try to get the category property based on API structure
     if (category && typeof category === 'object') {
+      // First check for the 'category' property which is in the API response
+      if ('category' in category && typeof category.category === 'string') {
+        return category.category as string
+      }
+      // Fallbacks if structure changes
       return (category.name as string) || (category.title as string) || String(category)
     }
     return 'Unknown Category'
