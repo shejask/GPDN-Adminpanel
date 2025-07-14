@@ -42,7 +42,7 @@ export function EditBlogDialog({ blog, open, onOpenChange }: EditBlogDialogProps
   const [isOpen, setIsOpen] = useState(open || false)
   const [loading, setLoading] = useState(false)
   const [editorLoaded, setEditorLoaded] = useState(false)
-  const [newThumbnailFile, setNewThumbnailFile] = useState<File | null>(null)
+  const [, setNewThumbnailFile] = useState<File | null>(null)
   const [previewThumbnail, setPreviewThumbnail] = useState<string>("")
   const [formData, setFormData] = useState({
     _id: blog._id,
@@ -50,7 +50,7 @@ export function EditBlogDialog({ blog, open, onOpenChange }: EditBlogDialogProps
     description: blog.description,
     content: blog.content,
     tags: Array.isArray(blog.tags) ? blog.tags : [],
-    category: typeof blog.category === 'string' ? blog.category : (blog.category as any)?._id || ""
+    category: typeof blog.category === 'string' ? blog.category : (blog.category as { _id: string })?._id || ""
   })
   
   const [categories, setCategories] = useState<Array<{ _id: string; category: string }>>([])
@@ -133,13 +133,7 @@ export function EditBlogDialog({ blog, open, onOpenChange }: EditBlogDialogProps
     }
   }
 
-  // Helper function to convert data URL to File object
-  const dataURLtoFile = async (dataUrl: string, filename: string): Promise<File> => {
-    const res = await fetch(dataUrl)
-    const blob = await res.blob()
-    return new File([blob], filename, { type: blob.type })
-  }
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
