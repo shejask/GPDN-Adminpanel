@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { CreatePalliativeDialog } from "./create-palliative-dialog"
+
 // Dialog is used in another component
 // import { EditPalliativeDialog } from "./edit-palliative-dialog"
 
@@ -95,7 +95,7 @@ export function PalliativeTable<TData, TValue>({
           <h3 className="text-lg font-medium">Palliative Care Directory</h3>
           <p className="text-sm text-muted-foreground">A list of all palliative care units registered in the system.</p>
         </div>
-        <CreatePalliativeDialog />
+        {/* <CreatePalliativeDialog /> */}
       </div>
       
       <div className="rounded-md border">

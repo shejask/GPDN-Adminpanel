@@ -88,9 +88,9 @@ export function ThreadDetailsDialog({ open = false, onOpenChange, thread }: Thre
           {/* Thread Content */}
           <div className="rounded-lg p-4 shadow-md border">
             <h3 className="text-lg font-semibold mb-2">Content</h3>
-            <div className="border rounded-md p-4">
+            <div className="border rounded-md p-4 bg-white text-white">
               <div 
-                className="prose max-w-none" 
+                className="prose max-w-none text-white" 
                 dangerouslySetInnerHTML={{ __html: thread.content }} 
               />
             </div>

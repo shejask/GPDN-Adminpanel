@@ -236,7 +236,7 @@ export function CreateBlogDialog() {
               <SelectContent>
                 {categories && categories.map((category) => (
                   <SelectItem 
-                    className="text-black" 
+                    className="text-white" 
                     key={category._id} 
                     value={category._id}
                   >

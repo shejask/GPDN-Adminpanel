@@ -210,7 +210,7 @@ export function ResourceDetailsDialog({
               <div>
                 <h3 className="text-sm font-medium mb-1">Content</h3>
                 <div 
-                  className="text-sm prose max-w-none border rounded-md p-4 bg-slate-50"
+                  className="text-sm prose max-w-none border rounded-md p-4 "
                   dangerouslySetInnerHTML={{ __html: resource.content }}
                 />
               </div>

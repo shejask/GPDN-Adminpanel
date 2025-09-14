@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Row } from "@tanstack/react-table"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+
 import {
   Dialog,
   DialogContent,
@@ -271,9 +271,9 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
+          {/* <DropdownMenuItem asChild>
             <Link href={`/admin/resources/${resource._id}`}>View Details</Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
             Edit
